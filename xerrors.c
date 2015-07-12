@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
+
+#include "types.h"
 void die(const char *errstr, ...);
 
-static int (*xerrorxlib)(Display *, XErrorEvent *);
+static XErrorHandlerT xerrorxlib;
 static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 
