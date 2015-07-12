@@ -79,9 +79,10 @@ typedef struct {
 	const Arg arg;
 } Key;
 
+typedef void (*ArrangeT)(Monitor *, Display*);
 struct Layout{
 	const char *symbol;
-	void (*arrange)(Monitor *, Display*);
+	ArrangeT arrange;
 };
 
 typedef struct {
