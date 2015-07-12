@@ -5,8 +5,12 @@
 
 #include <X11/Xlib.h>
 
-#include "die.h"
-#include "lib.h"
+void die(const char *errstr, ...); // die.c
+void checkotherwm(void); // xerrors.c
+void setup(void); // setup.c
+void scan(void);
+void run(void);
+void cleanup(void);
 
 extern Display *dpy;
 
