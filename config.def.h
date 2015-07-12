@@ -4,7 +4,7 @@
 static const char *fonts[] = {
     "Source Code Pro:style=Regular"
 };
-static const char dmenufont[] = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
+static const char dmenufont[] = "Source Code Pro:style=Regular";
 static const char normbordercolor[] = "#586e75"; // 14
 static const char normbgcolor[]     = "#fdf6e3"; // 8
 static const char normfgcolor[]     = "#657b83"; // 12
