@@ -1,4 +1,6 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/Xft/Xft.h>
+
 #define DRW_FONT_CACHE_SIZE 32
 
 typedef struct {

@@ -18,26 +18,17 @@
  *
  * Keys and tagging rules are organized as arrays and defined in config.h.
  */
-#include <errno.h>
-#include <locale.h>
-#include <stdarg.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #include <X11/cursorfont.h>
-#include <X11/keysym.h>
-#include <X11/Xatom.h>
 #include <X11/Xlib.h>
+#include <X11/keysym.h>
 #include <X11/Xproto.h>
-#include <X11/Xutil.h>
+#include <X11/Xft/Xft.h>
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
-#endif /* XINERAMA */
-#include <X11/Xft/Xft.h>
+#endif
+#include <X11/Xatom.h>
 
 #include "drw.h"
 #include "util.h"
@@ -55,6 +46,8 @@
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
 #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_text(drw, 0, 0, 0, 0, (X), 0) + drw->fonts[0]->h)
+
+typedef int(*XErrorHandlerT)(Display*, XErrorEvent*);
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -223,9 +216,7 @@ static void updatewmhints(Client *c);
 static void view(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
-static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
-static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 
 /* variables */
@@ -234,7 +225,6 @@ static char stext[256];
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
 static int bh, blw = 0;      /* bar geometry */
-static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
 static void (*handler[LASTEvent]) (XEvent *) = {
 	[ButtonPress] = buttonpress,
@@ -439,16 +429,6 @@ buttonpress(XEvent *e) {
 		if(click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
 		&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
 			buttons[i].func(click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
-}
-
-void
-checkotherwm(void) {
-	xerrorxlib = XSetErrorHandler(xerrorstart);
-	/* this causes an error if some other window manager is running */
-	XSelectInput(dpy, DefaultRootWindow(dpy), SubstructureRedirectMask);
-	XSync(dpy, False);
-	XSetErrorHandler(xerror);
-	XSync(dpy, False);
 }
 
 void
@@ -983,15 +963,17 @@ keypress(XEvent *e) {
 
 void
 killclient(const Arg *arg) {
+	XErrorHandlerT xeh;
+
 	if(!selmon->sel)
 		return;
 	if(!sendevent(selmon->sel, wmatom[WMDelete])) {
 		XGrabServer(dpy);
-		XSetErrorHandler(xerrordummy);
+		xeh = XSetErrorHandler(xerrordummy);
 		XSetCloseDownMode(dpy, DestroyAll);
 		XKillClient(dpy, selmon->sel->win);
 		XSync(dpy, False);
-		XSetErrorHandler(xerror);
+		XSetErrorHandler(xeh);
 		XUngrabServer(dpy);
 	}
 }
@@ -1690,6 +1672,7 @@ void
 unmanage(Client *c, Bool destroyed) {
 	Monitor *m = c->mon;
 	XWindowChanges wc;
+	XErrorHandlerT xeh;
 
 	/* The server grab construct avoids race conditions. */
 	detach(c);
@@ -1697,12 +1680,12 @@ unmanage(Client *c, Bool destroyed) {
 	if(!destroyed) {
 		wc.border_width = c->oldbw;
 		XGrabServer(dpy);
-		XSetErrorHandler(xerrordummy);
+		xeh = XSetErrorHandler(xerrordummy);
 		XConfigureWindow(dpy, c->win, CWBorderWidth, &wc); /* restore border */
 		XUngrabButton(dpy, AnyButton, AnyModifier, c->win);
 		setclientstate(c, WithdrawnState);
 		XSync(dpy, False);
-		XSetErrorHandler(xerror);
+		XSetErrorHandler(xeh);
 		XUngrabServer(dpy);
 	}
 	free(c);
@@ -2000,37 +1983,9 @@ wintomon(Window w) {
 	return selmon;
 }
 
-/* There's no way to check accesses to destroyed windows, thus those cases are
- * ignored (especially on UnmapNotify's).  Other types of errors call Xlibs
- * default error handler, which may call exit.  */
-int
-xerror(Display *dpy, XErrorEvent *ee) {
-	if(ee->error_code == BadWindow
-	|| (ee->request_code == X_SetInputFocus && ee->error_code == BadMatch)
-	|| (ee->request_code == X_PolyText8 && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_PolyFillRectangle && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_PolySegment && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_ConfigureWindow && ee->error_code == BadMatch)
-	|| (ee->request_code == X_GrabButton && ee->error_code == BadAccess)
-	|| (ee->request_code == X_GrabKey && ee->error_code == BadAccess)
-	|| (ee->request_code == X_CopyArea && ee->error_code == BadDrawable))
-		return 0;
-	fprintf(stderr, "dwm: fatal error: request code=%d, error code=%d\n",
-			ee->request_code, ee->error_code);
-	return xerrorxlib(dpy, ee); /* may call exit */
-}
-
 int
 xerrordummy(Display *dpy, XErrorEvent *ee) {
 	return 0;
-}
-
-/* Startup Error handler to check if another window manager
- * is already running. */
-int
-xerrorstart(Display *dpy, XErrorEvent *ee) {
-	die("dwm: another window manager is already running\n");
-	return -1;
 }
 
 void
