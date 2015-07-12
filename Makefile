@@ -3,7 +3,7 @@
 
 include config.mk
 
-SRC = drw.c dwm.c util.c lib.c
+SRC = drw.c main.c util.c lib.c
 OBJ = ${SRC:.c=.o}
 
 all: options dwm
