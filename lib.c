@@ -28,10 +28,25 @@
 #include <X11/Xatom.h>
 
 #include "drw.h"
-#include "util.h"
+#include "die.h"
 #include "lib.h"
 
-#include "macros.h"
+#define MAX(A, B)               ((A) > (B) ? (A) : (B))
+#define MIN(A, B)               ((A) < (B) ? (A) : (B))
+#define BETWEEN(X, A, B)        ((A) <= (X) && (X) <= (B))
+
+#define BUTTONMASK              (ButtonPressMask|ButtonReleaseMask)
+#define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
+#define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
+                               * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
+#define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
+#define LENGTH(X)               (sizeof X / sizeof X[0])
+#define TEXTW(X)                (drw_text(drw, 0, 0, 0, 0, (X), 0) + drw->fonts[0]->h)
+#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
+#define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
+#define WIDTH(X)                ((X)->w + 2 * (X)->bw)
+#define LENGTH2(X)              (LENGTH_ ## X)
+#define TAGMASK                 ((1 << LENGTH2(tags)) - 1)
 
 #include "types.h"
 

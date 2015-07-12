@@ -4,7 +4,8 @@
 #include <X11/keysym.h>
 
 #include "fwd.h"
-#include "macros.h"
+
+#define LENGTH(X)               (sizeof X / sizeof X[0])
 
 /* appearance */
 const char dmenufont[] = "Source Code Pro:style=Regular";

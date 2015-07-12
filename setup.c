@@ -4,17 +4,23 @@
 
 #include "types.h"
 #include "globals.h"
-#include "macros.h"
-#include "util.h"
+
+#define LENGTH(X)               (sizeof X / sizeof X[0])
+
+#include "die.h"
 #include "config.h"
 
-extern const char *fonts[1];
+// globals
+extern const char *fonts[1]; // config_fonts.c
+
+// using
 Bool updategeom(void);
 void updatebars(void);
 void updatestatus(void);
 void grabkeys(void);
 void focus(Client*);
 
+// private
 static void sigchld(int unused);
 
 void

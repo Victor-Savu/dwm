@@ -5,7 +5,7 @@
 
 #include <X11/Xlib.h>
 
-#include "util.h"
+#include "die.h"
 #include "lib.h"
 
 extern Display *dpy;

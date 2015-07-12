@@ -6,10 +6,14 @@
 #include <X11/Xft/Xft.h>
 
 #include "drw.h"
-#include "util.h"
+#include "die.h"
 
+// macros
 #define UTF_INVALID 0xFFFD
 #define UTF_SIZ 4
+#define MIN(A, B)               ((A) < (B) ? (A) : (B))
+#define BETWEEN(X, A, B)        ((A) <= (X) && (X) <= (B))
+
 
 static const unsigned char utfbyte[UTF_SIZ + 1] = {0x80,    0, 0xC0, 0xE0, 0xF0};
 static const unsigned char utfmask[UTF_SIZ + 1] = {0xC0, 0x80, 0xE0, 0xF0, 0xF8};

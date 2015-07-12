@@ -5,10 +5,11 @@
 #include "types.h"
 #include "globals.h"
 #include "fwd.h"
-#include "util.h"
+#include "die.h"
 #include "config.h"
-#include "macros.h"
 
+#define LENGTH(X)               (sizeof X / sizeof X[0])
+#define LENGTH2(X)              (LENGTH_ ## X)
 
 static Monitor *createmon(void);
 #ifdef XINERAMA

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "util.h"
+#include "die.h"
 
 void
 die(const char *errstr, ...) {
