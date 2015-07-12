@@ -1,8 +1,8 @@
 #include "types.h"
 #include "fwd.h"
 
-static Bool gettextprop(Window w, Atom atom, char *text, unsigned int size);
-static Atom getatomprop(Client *c, Atom prop);
+static Bool gettextprop(Window w, Atom atom, char *text, unsigned int size, Display* dpy);
+static Atom getatomprop(Client *c, Atom prop, Display* dpy);
 
 extern Window root;
 extern char stext[256];
@@ -10,8 +10,8 @@ extern Monitor *selmon;
 #include <X11/Xatom.h>
 #include <string.h>
 void
-updatestatus(void) {
-	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
+updatestatus(Display* dpy) {
+	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext), dpy))
 		strcpy(stext, "dwm-"VERSION);
 	drawbar(selmon);
 }
@@ -31,12 +31,11 @@ updatebarpos(Monitor *m) {
 }
 
 extern Monitor *mons;
-extern Display *dpy;
 extern int screen;
 #include "drw.h"
 extern Cur *cursor[CurLast];
 void
-updatebars(void) {
+updatebars(Display* dpy) {
 	Monitor *m;
 	XSetWindowAttributes wa = {
 		.override_redirect = True,
@@ -56,7 +55,7 @@ updatebars(void) {
 
 extern Atom netatom[NetLast];
 void
-updateclientlist() {
+updateclientlist(Display* dpy) {
 	Client *c;
 	Monitor *m;
 
@@ -70,7 +69,7 @@ updateclientlist() {
 
 extern unsigned int numlockmask;
 void
-updatenumlockmask(void) {
+updatenumlockmask(Display* dpy) {
 	unsigned int i, j;
 	XModifierKeymap *modmap;
 
@@ -85,7 +84,7 @@ updatenumlockmask(void) {
 }
 
 void
-updatesizehints(Client *c) {
+updatesizehints(Client *c, Display* dpy) {
 	long msize;
 	XSizeHints size;
 
@@ -136,26 +135,26 @@ updatesizehints(Client *c) {
 
 extern const char broken[];
 void
-updatetitle(Client *c) {
-	if(!gettextprop(c->win, netatom[NetWMName], c->name, sizeof c->name))
-		gettextprop(c->win, XA_WM_NAME, c->name, sizeof c->name);
+updatetitle(Client *c, Display* dpy) {
+	if(!gettextprop(c->win, netatom[NetWMName], c->name, sizeof c->name, dpy))
+		gettextprop(c->win, XA_WM_NAME, c->name, sizeof c->name, dpy);
 	if(c->name[0] == '\0') /* hack to mark broken clients */
 		strcpy(c->name, broken);
 }
 
 void
-updatewindowtype(Client *c) {
-	Atom state = getatomprop(c, netatom[NetWMState]);
-	Atom wtype = getatomprop(c, netatom[NetWMWindowType]);
+updatewindowtype(Client *c, Display* dpy) {
+	Atom state = getatomprop(c, netatom[NetWMState], dpy);
+	Atom wtype = getatomprop(c, netatom[NetWMWindowType], dpy);
 
 	if(state == netatom[NetWMFullscreen])
-		setfullscreen(c, True);
+		setfullscreen(c, True, dpy);
 	if(wtype == netatom[NetWMWindowTypeDialog])
 		c->isfloating = True;
 }
 
 void
-updatewmhints(Client *c) {
+updatewmhints(Client *c, Display* dpy) {
 	XWMHints *wmh;
 
 	if((wmh = XGetWMHints(dpy, c->win))) {
@@ -174,7 +173,7 @@ updatewmhints(Client *c) {
 }
 
 Bool
-gettextprop(Window w, Atom atom, char *text, unsigned int size) {
+gettextprop(Window w, Atom atom, char *text, unsigned int size, Display* dpy) {
 	char **list = NULL;
 	int n;
 	XTextProperty name;
@@ -199,7 +198,7 @@ gettextprop(Window w, Atom atom, char *text, unsigned int size) {
 }
 
 Atom
-getatomprop(Client *c, Atom prop) {
+getatomprop(Client *c, Atom prop, Display* dpy) {
 	int di;
 	unsigned long dl;
 	unsigned char *p = NULL;

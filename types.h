@@ -4,6 +4,7 @@
 #include <X11/Xlib.h>
 
 typedef int(*XErrorHandlerT)(Display*, XErrorEvent*);
+typedef void(*HandlerT)(XEvent *, Display *);
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -21,12 +22,13 @@ typedef union {
 	float f;
 	const void *v;
 } Arg;
+typedef void (*Function)(const Arg *, Display *);
 
 typedef struct {
 	unsigned int click;
 	unsigned int mask;
 	unsigned int button;
-	void (*func)(const Arg *arg);
+	Function func;
 	const Arg arg;
 } Button;
 
@@ -73,17 +75,17 @@ struct Monitor {
 typedef struct {
 	unsigned int mod;
 	KeySym keysym;
-	void (*func)(const Arg *);
+	Function func;
 	const Arg arg;
 } Key;
 
 struct Layout{
 	const char *symbol;
-	void (*arrange)(Monitor *);
+	void (*arrange)(Monitor *, Display*);
 };
 
 typedef struct {
-	const char *class;
+	const char *type;
 	const char *instance;
 	const char *title;
 	unsigned int tags;

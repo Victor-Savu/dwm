@@ -13,7 +13,7 @@ int screen;
 int sw, sh;           /* X display screen geometry width, height */
 int bh, blw = 0;      /* bar geometry */
 unsigned int numlockmask = 0;
-void (*handler[LASTEvent]) (XEvent *) = {
+HandlerT handler[LASTEvent] = {
 	[ButtonPress] = buttonpress,
 	[ClientMessage] = clientmessage,
 	[ConfigureRequest] = configurerequest,
@@ -33,7 +33,6 @@ Atom wmatom[WMLast], netatom[NetLast];
 Bool running = True;
 Cur *cursor[CurLast];
 ClrScheme scheme[SchemeLast];
-Display *dpy;
 Drw *drw;
 Monitor *mons, *selmon;
 Window root;

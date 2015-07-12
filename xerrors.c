@@ -3,14 +3,12 @@
 #include <X11/Xproto.h>
 void die(const char *errstr, ...);
 
-extern Display *dpy;
-
 static int (*xerrorxlib)(Display *, XErrorEvent *);
 static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 
 void
-checkotherwm(void) {
+checkotherwm(Display* dpy) {
 	xerrorxlib = XSetErrorHandler(xerrorstart);
 	/* this causes an error if some other window manager is running */
 	XSelectInput(dpy, DefaultRootWindow(dpy), SubstructureRedirectMask);

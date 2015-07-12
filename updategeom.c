@@ -14,7 +14,6 @@ static Monitor *createmon(void);
 static Bool isuniquegeom(XineramaScreenInfo *unique, size_t n, XineramaScreenInfo *info);
 #endif
 
-extern Display *dpy;
 extern Monitor *mons;
 extern Monitor *selmon;
 extern int sw;
@@ -23,7 +22,7 @@ extern Window root;
 #include <stdlib.h>
 #include <string.h>
 Bool
-updategeom(void) {
+updategeom(Display* dpy) {
 	Bool dirty = False;
 
 #ifdef XINERAMA
@@ -79,7 +78,7 @@ updategeom(void) {
 				}
 				if(m == selmon)
 					selmon = mons;
-				cleanupmon(m);
+				cleanupmon(m, dpy);
 			}
 		}
 		free(unique);
@@ -99,7 +98,7 @@ updategeom(void) {
 	}
 	if(dirty) {
 		selmon = mons;
-		selmon = wintomon(root);
+		selmon = wintomon(root, dpy);
 	}
 	return dirty;
 }

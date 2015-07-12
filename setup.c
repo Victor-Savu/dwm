@@ -3,6 +3,7 @@
 #include <X11/cursorfont.h>
 
 #include "types.h"
+#include "fwd.h"
 
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 
@@ -11,18 +12,10 @@ void die(const char *errstr, ...);
 // globals
 extern const char *fonts[1]; // config_fonts.c
 
-// using
-Bool updategeom(void);
-void updatebars(void);
-void updatestatus(void);
-void grabkeys(void);
-void focus(Client*);
-
 // private
 static void sigchld(int unused);
 
 extern int screen;
-extern Display *dpy;
 extern int sw;
 extern int sh;
 extern Window root;
@@ -41,7 +34,7 @@ extern const char selbordercolor[];
 extern const char selbgcolor[];
 extern const char selfgcolor[];
 void
-setup(void) {
+setup(Display* dpy) {
 	XSetWindowAttributes wa;
 
 	/* clean up any zombies immediately */
@@ -57,7 +50,7 @@ setup(void) {
 	if (!drw->fontcount)
 		die("No fonts could be loaded.\n");
 	bh = drw->fonts[0]->h + 2;
-	updategeom();
+	updategeom(dpy);
 	/* init atoms */
 	wmatom[WMProtocols] = XInternAtom(dpy, "WM_PROTOCOLS", False);
 	wmatom[WMDelete] = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
@@ -83,8 +76,8 @@ setup(void) {
 	scheme[SchemeSel].bg = drw_clr_create(drw, selbgcolor);
 	scheme[SchemeSel].fg = drw_clr_create(drw, selfgcolor);
 	/* init bars */
-	updatebars();
-	updatestatus();
+	updatebars(dpy);
+	updatestatus(dpy);
 	/* EWMH support per view */
 	XChangeProperty(dpy, root, netatom[NetSupported], XA_ATOM, 32,
 			PropModeReplace, (unsigned char *) netatom, NetLast);
@@ -95,8 +88,8 @@ setup(void) {
 	                |EnterWindowMask|LeaveWindowMask|StructureNotifyMask|PropertyChangeMask;
 	XChangeWindowAttributes(dpy, root, CWEventMask|CWCursor, &wa);
 	XSelectInput(dpy, root, wa.event_mask);
-	grabkeys();
-	focus(NULL);
+	grabkeys(dpy);
+	focus(NULL, dpy);
 }
 
 void
