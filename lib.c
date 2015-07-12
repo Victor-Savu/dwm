@@ -28,7 +28,7 @@
 #include <X11/Xatom.h>
 
 #include "drw.h"
-#include "die.h"
+void die(const char *errstr, ...);
 
 #define MAX(A, B)               ((A) > (B) ? (A) : (B))
 #define MIN(A, B)               ((A) < (B) ? (A) : (B))

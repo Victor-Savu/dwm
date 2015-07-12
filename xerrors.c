@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
-#include "die.h"
+void die(const char *errstr, ...);
 
 extern Display *dpy;
 

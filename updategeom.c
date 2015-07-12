@@ -5,7 +5,7 @@
 #include "types.h"
 #include "globals.h"
 #include "fwd.h"
-#include "die.h"
+void die(const char *errstr, ...);
 #include "config.h"
 
 #define LENGTH(X)               (sizeof X / sizeof X[0])

@@ -6,7 +6,7 @@
 #include <X11/Xft/Xft.h>
 
 #include "drw.h"
-#include "die.h"
+void die(const char *errstr, ...);
 
 // macros
 #define UTF_INVALID 0xFFFD
