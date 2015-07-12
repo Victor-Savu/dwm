@@ -1,4 +1,9 @@
-#include "globals.h"
+
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include "types.h"
+#include "drw.h"
+
 #include "fwd.h"
 
 /* variables */

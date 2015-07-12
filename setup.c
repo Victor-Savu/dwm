@@ -3,7 +3,6 @@
 #include <X11/cursorfont.h>
 
 #include "types.h"
-#include "globals.h"
 
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 
@@ -23,6 +22,19 @@ void focus(Client*);
 // private
 static void sigchld(int unused);
 
+extern int screen;
+extern Display *dpy;
+extern int sw;
+extern int sh;
+extern Window root;
+#include "drw.h"
+extern Drw *drw;
+extern int bh;
+extern Atom wmatom[WMLast];
+extern Atom netatom[NetLast];
+extern Cur *cursor[CurLast];
+extern ClrScheme scheme[SchemeLast];
+#include <X11/Xatom.h>
 void
 setup(void) {
 	XSetWindowAttributes wa;

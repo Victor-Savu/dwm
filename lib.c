@@ -50,13 +50,14 @@ void die(const char *errstr, ...);
 #include "types.h"
 
 #include "fwd.h"
-
-#include "globals.h"
-
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
 /* function implementations */
+
+extern Display *dpy;
+extern const char broken[];
+extern Monitor *mons;
 void
 applyrules(Client *c) {
 	const char *class, *instance;
@@ -91,6 +92,9 @@ applyrules(Client *c) {
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
 
+extern int sw;
+extern int sh;
+extern int bh;
 Bool
 applysizehints(Client *c, int *x, int *y, int *w, int *h, Bool interact) {
 	Bool baseismin;
@@ -189,6 +193,11 @@ attachstack(Client *c) {
 	c->mon->stack = c;
 }
 
+extern Monitor *selmon;
+extern Drw *drw;
+extern int blw;
+extern char stext[256];
+extern unsigned int numlockmask;
 void
 buttonpress(XEvent *e) {
 	unsigned int i, x, click;
@@ -230,6 +239,10 @@ buttonpress(XEvent *e) {
 			buttons[i].func(click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
 }
 
+extern Window root;
+extern Cur *cursor[CurLast];
+extern ClrScheme scheme[SchemeLast];
+extern Atom netatom[NetLast];
 void
 cleanup(void) {
 	Arg a = {.ui = ~0};
@@ -594,6 +607,7 @@ getrootptr(int *x, int *y) {
 	return XQueryPointer(dpy, root, &dummy, &dummy, x, y, &di, &di, &dui);
 }
 
+extern Atom wmatom[WMLast];
 long
 getstate(Window w) {
 	int format;
@@ -803,6 +817,7 @@ motionnotify(XEvent *e) {
 	mon = m;
 }
 
+extern void (*handler[LASTEvent]) (XEvent *);
 void
 movemouse(const Arg *arg) {
 	int x, y, ocx, ocy, nx, ny;
@@ -915,6 +930,7 @@ propertynotify(XEvent *e) {
 	}
 }
 
+extern Bool running;
 void
 quit(const Arg *arg) {
 	running = False;

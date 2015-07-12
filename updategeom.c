@@ -3,7 +3,6 @@
 #endif
 
 #include "types.h"
-#include "globals.h"
 #include "fwd.h"
 void die(const char *errstr, ...);
 #include "config.h"
@@ -16,6 +15,12 @@ static Monitor *createmon(void);
 static Bool isuniquegeom(XineramaScreenInfo *unique, size_t n, XineramaScreenInfo *info);
 #endif
 
+extern Display *dpy;
+extern Monitor *mons;
+extern Monitor *selmon;
+extern int sw;
+extern int sh;
+extern Window root;
 Bool
 updategeom(void) {
 	Bool dirty = False;

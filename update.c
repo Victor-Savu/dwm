@@ -1,10 +1,13 @@
 #include "types.h"
-#include "globals.h"
 #include "fwd.h"
 
 static Bool gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static Atom getatomprop(Client *c, Atom prop);
 
+extern Window root;
+extern char stext[256];
+extern Monitor *selmon;
+#include <X11/Xatom.h>
 void
 updatestatus(void) {
 	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
@@ -12,6 +15,7 @@ updatestatus(void) {
 	drawbar(selmon);
 }
 
+extern int bh;
 void
 updatebarpos(Monitor *m) {
 	m->wy = m->my;
@@ -25,6 +29,11 @@ updatebarpos(Monitor *m) {
 		m->by = -bh;
 }
 
+extern Monitor *mons;
+extern Display *dpy;
+extern int screen;
+#include "drw.h"
+extern Cur *cursor[CurLast];
 void
 updatebars(void) {
 	Monitor *m;
@@ -44,6 +53,7 @@ updatebars(void) {
 	}
 }
 
+extern Atom netatom[NetLast];
 void
 updateclientlist() {
 	Client *c;
@@ -57,6 +67,7 @@ updateclientlist() {
 			                (unsigned char *) &(c->win), 1);
 }
 
+extern unsigned int numlockmask;
 void
 updatenumlockmask(void) {
 	unsigned int i, j;
@@ -122,6 +133,7 @@ updatesizehints(Client *c) {
 	             && c->maxw == c->minw && c->maxh == c->minh);
 }
 
+extern const char broken[];
 void
 updatetitle(Client *c) {
 	if(!gettextprop(c->win, netatom[NetWMName], c->name, sizeof c->name))
