@@ -5,7 +5,6 @@
 #include "types.h"
 #include "fwd.h"
 void die(const char *errstr, ...);
-#include "config.h"
 
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 #define LENGTH2(X)              (LENGTH_ ## X)
@@ -21,6 +20,8 @@ extern Monitor *selmon;
 extern int sw;
 extern int sh;
 extern Window root;
+#include <stdlib.h>
+#include <string.h>
 Bool
 updategeom(void) {
 	Bool dirty = False;
@@ -103,6 +104,12 @@ updategeom(void) {
 	return dirty;
 }
 
+extern const float mfact; 
+extern const int nmaster;    
+extern const Bool showbar;     
+extern const Bool topbar;     
+extern const Layout layouts[];
+extern const size_t LENGTH_layouts;
 Monitor *
 createmon(void) {
 	Monitor *m;

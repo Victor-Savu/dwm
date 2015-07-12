@@ -7,7 +7,6 @@
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 
 void die(const char *errstr, ...);
-#include "config.h"
 
 // globals
 extern const char *fonts[1]; // config_fonts.c
@@ -35,6 +34,12 @@ extern Atom netatom[NetLast];
 extern Cur *cursor[CurLast];
 extern ClrScheme scheme[SchemeLast];
 #include <X11/Xatom.h>
+extern const char normbordercolor[];
+extern const char normbgcolor[];
+extern const char normfgcolor[];
+extern const char selbordercolor[];
+extern const char selbgcolor[];
+extern const char selfgcolor[];
 void
 setup(void) {
 	XSetWindowAttributes wa;

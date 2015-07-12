@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
-#include "config.h"
+#include <stddef.h>
+#include "types.h"
 
 #include <X11/keysym.h>
 

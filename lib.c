@@ -16,7 +16,7 @@
  * on each monitor. Each client contains a bit array to indicate the tags of a
  * client.
  *
- * Keys and tagging rules are organized as arrays and defined in config.h.
+ * Keys and tagging rules are organized as arrays and defined in config.c.
  */
 #include <sys/wait.h>
 #include <unistd.h>
@@ -51,13 +51,15 @@ void die(const char *errstr, ...);
 
 #include "fwd.h"
 /* configuration, allows nested code to access above variables */
-#include "config.h"
 
 /* function implementations */
 
 extern Display *dpy;
 extern const char broken[];
 extern Monitor *mons;
+extern const size_t LENGTH_rules;
+extern const Rule rules[];
+extern const size_t LENGTH_tags;
 void
 applyrules(Client *c) {
 	const char *class, *instance;
@@ -95,6 +97,7 @@ applyrules(Client *c) {
 extern int sw;
 extern int sh;
 extern int bh;
+extern const Bool resizehints; 
 Bool
 applysizehints(Client *c, int *x, int *y, int *w, int *h, Bool interact) {
 	Bool baseismin;
@@ -198,6 +201,9 @@ extern Drw *drw;
 extern int blw;
 extern char stext[256];
 extern unsigned int numlockmask;
+extern const char *tags[];
+extern const size_t LENGTH_buttons;
+extern Button buttons[];
 void
 buttonpress(XEvent *e) {
 	unsigned int i, x, click;
@@ -648,6 +654,8 @@ grabbuttons(Client *c, Bool focused) {
 	}
 }
 
+extern const size_t LENGTH_keys;
+extern Key keys[];
 void
 grabkeys(void) {
 	updatenumlockmask();
@@ -703,6 +711,7 @@ killclient(const Arg *arg) {
 	}
 }
 
+extern const unsigned int borderpx;        
 void
 manage(Window w, XWindowAttributes *wa) {
 	Client *c, *t = NULL;
@@ -818,6 +827,7 @@ motionnotify(XEvent *e) {
 }
 
 extern void (*handler[LASTEvent]) (XEvent *);
+extern const unsigned int snap;       
 void
 movemouse(const Arg *arg) {
 	int x, y, ocx, ocy, nx, ny;
@@ -1215,6 +1225,8 @@ showhide(Client *c) {
 	}
 }
 
+extern const char *dmenucmd[];
+extern char dmenumon[2]; 
 void
 spawn(const Arg *arg) {
 	if(arg->v == dmenucmd)

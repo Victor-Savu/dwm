@@ -8,6 +8,7 @@ extern Window root;
 extern char stext[256];
 extern Monitor *selmon;
 #include <X11/Xatom.h>
+#include <string.h>
 void
 updatestatus(void) {
 	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
