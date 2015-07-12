@@ -3,7 +3,8 @@
 
 include config.mk
 
-SRC = drw.c main.c util.c lib.c xerrors.c
+SRC = config.c config_fonts.c drw.c globals.c lib.c main.c setup.c update.c updategeom.c util.c xerrors.c
+
 OBJ = ${SRC:.c=.o}
 
 all: options dwm
@@ -20,22 +21,18 @@ options:
 
 ${OBJ}: config.h config.mk
 
-config.h:
-	@echo creating $@ from config.def.h
-	@cp config.def.h $@
-
 dwm: ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS}
 
 clean:
 	@echo cleaning
-	@rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz config.h
+	@rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
 
 dist: clean
 	@echo creating dist tarball
 	@mkdir -p dwm-${VERSION}
-	@cp -R LICENSE Makefile README config.def.h config.mk \
+	@cp -R LICENSE Makefile README config.mk \
 		dwm.1 ${SRC} dwm-${VERSION}
 	@tar -cf dwm-${VERSION}.tar dwm-${VERSION}
 	@gzip dwm-${VERSION}.tar

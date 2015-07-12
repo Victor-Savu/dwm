@@ -1,25 +1,36 @@
 /* See LICENSE file for copyright and license details. */
+#include "config.h"
+
+#include <X11/keysym.h>
+
+#include "fwd.h"
+#include "macros.h"
 
 /* appearance */
-static const char *fonts[] = {
-    "Source Code Pro:style=Regular"
-};
-static const char dmenufont[] = "Source Code Pro:style=Regular";
-static const char normbordercolor[] = "#586e75"; // 14
-static const char normbgcolor[]     = "#fdf6e3"; // 8
-static const char normfgcolor[]     = "#657b83"; // 12
-static const char selbordercolor[]  = "#005577"; // 9 
-static const char selbgcolor[]      = "#005577"; // 7
-static const char selfgcolor[]      = "#eeeeee"; // 11
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const unsigned int snap      = 32;       /* snap pixel */
-static const Bool showbar           = True;     /* False means no bar */
-static const Bool topbar            = True;     /* False means bottom bar */
+const char dmenufont[] = "Source Code Pro:style=Regular";
+const size_t LENGTH_dmenufont = LENGTH(dmenufont);
+const char normbordercolor[] = "#586e75";
+const size_t LENGTH_normbordercolor = LENGTH(normbordercolor);
+const char normbgcolor[]     = "#fdf6e3";
+const size_t LENGTH_normbgcolor = LENGTH(normbgcolor);
+const char normfgcolor[]     = "#657b83";
+const size_t LENGTH_normfgcolor = LENGTH(normfgcolor);
+const char selbordercolor[]  = "#005577";
+const size_t LENGTH_selbordercolor = LENGTH(selbordercolor);
+const char selbgcolor[]      = "#005577";
+const size_t LENGTH_selbgcolor = LENGTH(selbgcolor);
+const char selfgcolor[]      = "#eeeeee";
+const size_t LENGTH_selfgcolor = LENGTH(selfgcolor);
+const unsigned int borderpx  = 1;        /* border pixel of windows */
+const unsigned int snap      = 32;       /* snap pixel */
+const Bool showbar           = True;     /* False means no bar */
+const Bool topbar            = True;     /* False means bottom bar */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+const size_t LENGTH_tags = LENGTH(tags);
 
-static const Rule rules[] = {
+const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
@@ -28,18 +39,20 @@ static const Rule rules[] = {
 	{ "Gimp",     NULL,       NULL,       0,            True,        -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       False,       -1 },
 };
+const size_t LENGTH_rules = LENGTH(rules);
 
 /* layout(s) */
-static const float mfact      = 0.55; /* factor of master area size [0.05..0.95] */
-static const int nmaster      = 1;    /* number of clients in master area */
-static const Bool resizehints = True; /* True means respect size hints in tiled resizals */
+const float mfact      = 0.55; /* factor of master area size [0.05..0.95] */
+const int nmaster      = 1;    /* number of clients in master area */
+const Bool resizehints = True; /* True means respect size hints in tiled resizals */
 
-static const Layout layouts[] = {
+const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
 };
+const size_t LENGTH_layouts = LENGTH(layouts);
 
 /* key definitions */
 #define MODKEY Mod4Mask
@@ -53,11 +66,13 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *termcmd[]  = { "st", NULL };
+char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+const size_t LENGTH_dmenucmd = LENGTH(dmenucmd);
+const char *termcmd[]  = { "st", NULL };
+const size_t LENGTH_termcmd = LENGTH(termcmd);
 
-static Key keys[] = {
+Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
@@ -93,10 +108,11 @@ static Key keys[] = {
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
+const size_t LENGTH_keys = LENGTH(keys);
 
 /* button definitions */
 /* click can be ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
-static Button buttons[] = {
+Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
@@ -110,4 +126,7 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
+const size_t LENGTH_buttons = LENGTH(buttons);
 
+/* compile-time check if all tags fit into an unsigned int bit array. */
+struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };

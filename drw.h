@@ -1,3 +1,6 @@
+#ifndef DRW_H
+#define DRW_H
+
 /* See LICENSE file for copyright and license details. */
 #include <X11/Xft/Xft.h>
 
@@ -74,3 +77,5 @@ int drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, const char 
 
 /* Map functions */
 void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
+
+#endif
