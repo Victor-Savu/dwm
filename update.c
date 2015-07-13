@@ -31,12 +31,12 @@ updatebarpos(Monitor *m) {
 }
 
 extern Monitor *mons;
-extern int screen;
 #include "drw.h"
 extern Cur *cursor[CurLast];
 void
 updatebars(Display* dpy) {
 	Monitor *m;
+	int screen = DefaultScreen(dpy);
 	XSetWindowAttributes wa = {
 		.override_redirect = True,
 		.background_pixmap = ParentRelative,

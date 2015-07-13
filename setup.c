@@ -15,7 +15,6 @@ extern const char *fonts[1]; // config_fonts.c
 // private
 static void sigchld(int unused);
 
-extern int screen;
 extern int sw;
 extern int sh;
 extern Window root;
@@ -36,6 +35,7 @@ extern const char selfgcolor[];
 void
 setup(Display* dpy) {
 	XSetWindowAttributes wa;
+	int screen;
 
 	/* clean up any zombies immediately */
 	sigchld(0);

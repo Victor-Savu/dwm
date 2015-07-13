@@ -9,7 +9,6 @@
 /* variables */
 const char broken[] = "broken";
 char stext[256];
-int screen;
 int sw, sh;           /* X display screen geometry width, height */
 int bh, blw = 0;      /* bar geometry */
 unsigned int numlockmask = 0;
