@@ -825,7 +825,7 @@ motionnotify(XEvent *e, Display* dpy) {
 	mon = m;
 }
 
-HandlerT handler[LASTEvent];
+extern HandlerT handler[LASTEvent];
 extern const unsigned int snap;       
 void
 movemouse(const Arg *arg, Display* dpy) {
