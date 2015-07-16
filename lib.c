@@ -244,38 +244,6 @@ buttonpress(XEvent *e, Display* dpy) {
 			buttons[i].func(click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg, dpy);
 }
 
-extern Window root;
-extern Cur *cursor[CurLast];
-extern ClrScheme scheme[SchemeLast];
-extern Atom netatom[NetLast];
-void
-cleanup(Display* dpy) {
-	Arg a = {.ui = ~0};
-	Layout foo = { "", NULL };
-	Monitor *m;
-
-	view(&a, dpy);
-	selmon->lt[selmon->sellt] = &foo;
-	for(m = mons; m; m = m->next)
-		while(m->stack)
-			unmanage(m->stack, False, dpy);
-	XUngrabKey(dpy, AnyKey, AnyModifier, root);
-	while(mons)
-		cleanupmon(mons, dpy);
-	drw_cur_free(drw, cursor[CurNormal]);
-	drw_cur_free(drw, cursor[CurResize]);
-	drw_cur_free(drw, cursor[CurMove]);
-	drw_clr_free(scheme[SchemeNorm].border);
-	drw_clr_free(scheme[SchemeNorm].bg);
-	drw_clr_free(scheme[SchemeNorm].fg);
-	drw_clr_free(scheme[SchemeSel].border);
-	drw_clr_free(scheme[SchemeSel].bg);
-	drw_clr_free(scheme[SchemeSel].fg);
-	drw_free(drw);
-	XSync(dpy, False);
-	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
-	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
-}
 
 void
 cleanupmon(Monitor *mon, Display* dpy) {
@@ -304,6 +272,7 @@ clearurgent(Client *c, Display* dpy) {
 	XFree(wmh);
 }
 
+extern Atom netatom[NetLast];
 void
 clientmessage(XEvent *e, Display* dpy) {
 	XClientMessageEvent *cme = &e->xclient;
@@ -442,6 +411,7 @@ dirtomon(int dir) {
 	return m;
 }
 
+extern ClrScheme scheme[SchemeLast];
 void
 drawbar(Monitor *m) {
 	int x, xx, w;
@@ -501,6 +471,7 @@ drawbars(void) {
 		drawbar(m);
 }
 
+extern Window root;
 void
 enternotify(XEvent *e, Display* dpy) {
 	Client *c;
@@ -825,6 +796,7 @@ motionnotify(XEvent *e, Display* dpy) {
 	mon = m;
 }
 
+extern Cur *cursor[CurLast];
 extern HandlerT handler[LASTEvent];
 extern const unsigned int snap;       
 void

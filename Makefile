@@ -3,7 +3,7 @@
 
 include config.mk
 
-SRC = config.c config_fonts.c drw.c globals.c lib.c main.c setup.c update.c updategeom.c die.c xerrors.c
+SRC = cleanup.c config.c config_fonts.c die.c drw.c globals.c lib.c main.c setup.c update.c updategeom.c xerrors.c
 
 OBJ = ${SRC:.c=.o}
 

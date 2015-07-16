@@ -61,11 +61,9 @@ unsigned int drw_font_getexts_width(Fnt *font, const char *text, unsigned int le
 
 /* Colour abstraction */
 Clr *drw_clr_create(Drw *drw, const char *clrname);
-void drw_clr_free(Clr *clr);
 
 /* Cursor abstraction */
 Cur *drw_cur_create(Drw *drw, int shape);
-void drw_cur_free(Drw *drw, Cur *cursor);
 
 /* Drawing context manipulation */
 void drw_setfont(Drw *drw, Fnt *font);

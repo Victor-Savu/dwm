@@ -195,12 +195,6 @@ drw_clr_create(Drw *drw, const char *clrname) {
 }
 
 void
-drw_clr_free(Clr *clr) {
-	if(clr)
-		free(clr);
-}
-
-void
 drw_setscheme(Drw *drw, ClrScheme *scheme) {
 	if(drw && scheme)
 		drw->scheme = scheme;
@@ -406,10 +400,3 @@ drw_cur_create(Drw *drw, int shape) {
 	return cur;
 }
 
-void
-drw_cur_free(Drw *drw, Cur *cursor) {
-	if(!drw || !cursor)
-		return;
-	XFreeCursor(drw->dpy, cursor->cursor);
-	free(cursor);
-}
