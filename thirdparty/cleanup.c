@@ -1,8 +1,25 @@
 #include "types.h"
 #include "drw.h" 
 #include "fwd.h"
-
+#include "handlers.h"
 #include "drw_types.h"
+
+void
+cleanupmon(Monitor *mon, Display* dpy) {
+	extern Monitor *mons;
+	Monitor *m;
+
+	if(mon == mons)
+		mons = mons->next;
+	else {
+		for(m = mons; m && m->next != mon; m = m->next);
+		m->next = mon->next;
+	}
+	XUnmapWindow(dpy, mon->barwin);
+	XDestroyWindow(dpy, mon->barwin);
+	free(mon);
+}
+
 
 static void drw_cur_free(Drw *drw, Cur *cursor);
 static void drw_clr_free(Clr *clr);
