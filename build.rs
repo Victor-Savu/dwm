@@ -14,7 +14,6 @@ fn main() {
         .file("thirdparty/setup.c")
         .file("thirdparty/update.c")
         .file("thirdparty/updategeom.c")
-        .file("thirdparty/xerrors.c")
         .include("thirdparty")
         .define("_POSIX_C_SOURCE", Some("2"))
         .define("_BSD_SOURCE", None)
@@ -25,6 +24,7 @@ fn main() {
         .flag("-Wall")
         .flag("-Wno-deprecated-declarations")
         .flag("-O2")
+        .flag("-fdump-rtl-expand")
         .compile("libdwm.a");
 
     println!("cargo:rustc-link-search=/usr/lib/x86_64-linux-gnu");
