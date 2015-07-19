@@ -3,9 +3,10 @@
 
 include config.mk
 
-SRC = cleanup.c config.c config_fonts.c die.c drw.c globals.c lib.c main.c setup.c update.c updategeom.c xerrors.c
+LIB_SRC = cleanup.c config.c config_fonts.c die.c drw.c globals.c lib.c main.c setup.c update.c updategeom.c xerrors.c
+DWM_SRC = main.c
 
-OBJ = ${SRC:.c=.o}
+LIB_OBJ = ${LIB_SRC:.c=.o}
 
 all: options dwm
 
@@ -19,39 +20,19 @@ options:
 	@echo CC $<
 	@${CC} -c ${CFLAGS} $<
 
-${OBJ}: config.mk
+${LIB_OBJ}: config.mk
+${DWM_OBJ}: config.mk
 
-dwm: ${OBJ}
+lib.a: ${LIB_OBJ}
+	@echo AR ruv $@
+	@${AR} ruv $@ ${LIB_OBJ}
+
+dwm: ${DWM_OBJ} lib.a
 	@echo CC -o $@
-	@${CC} -o $@ ${OBJ} ${LDFLAGS}
+	@${CC} -o $@ ${DWM_OBJ} lib.a ${LDFLAGS}
 
 clean:
 	@echo cleaning
-	@rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
+	@rm -f dwm lib.a ${DWM_OBJ} ${LIB_OBJ} dwm-${VERSION}.tar.gz
 
-dist: clean
-	@echo creating dist tarball
-	@mkdir -p dwm-${VERSION}
-	@cp -R LICENSE Makefile README config.mk \
-		dwm.1 ${SRC} dwm-${VERSION}
-	@tar -cf dwm-${VERSION}.tar dwm-${VERSION}
-	@gzip dwm-${VERSION}.tar
-	@rm -rf dwm-${VERSION}
-
-install: all
-	@echo installing executable file to ${DESTDIR}${PREFIX}/bin
-	@mkdir -p ${DESTDIR}${PREFIX}/bin
-	@cp -f dwm ${DESTDIR}${PREFIX}/bin
-	@chmod 755 ${DESTDIR}${PREFIX}/bin/dwm
-	@echo installing manual page to ${DESTDIR}${MANPREFIX}/man1
-	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	@sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
-
-uninstall:
-	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
-	@rm -f ${DESTDIR}${PREFIX}/bin/dwm
-	@echo removing manual page from ${DESTDIR}${MANPREFIX}/man1
-	@rm -f ${DESTDIR}${MANPREFIX}/man1/dwm.1
-
-.PHONY: all options clean dist install uninstall
+.PHONY: all options clean

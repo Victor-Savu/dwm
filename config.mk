@@ -32,3 +32,4 @@ LDFLAGS  = -s ${LIBS}
 
 # compiler and linker
 CC = cc
+AR = ar
