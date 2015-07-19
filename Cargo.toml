@@ -2,7 +2,6 @@
 name = "dwm"
 version = "0.1.0"
 authors = ["Victor-Nicolae Savu <victor.nicolae.savu@gmail.com>"]
-link = "dwm"
 build = "build.rs"
 
 [build-dependencies]
