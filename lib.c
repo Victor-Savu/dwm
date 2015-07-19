@@ -27,7 +27,8 @@
 #include <X11/Xft/Xft.h>
 #include <X11/Xatom.h>
 
-#include "drw.h"
+#include "drw_types.h"
+
 void die(const char *errstr, ...);
 
 #define MAX(A, B)               ((A) > (B) ? (A) : (B))

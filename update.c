@@ -1,4 +1,5 @@
 #include "types.h"
+#include "drw_types.h"
 #include "fwd.h"
 
 static Bool gettextprop(Window w, Atom atom, char *text, unsigned int size, Display* dpy);

@@ -5,7 +5,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xft/Xft.h>
 
-#include "drw.h"
+#include "drw_types.h"
+
 void die(const char *errstr, ...);
 
 // macros

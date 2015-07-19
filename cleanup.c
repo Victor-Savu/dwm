@@ -2,6 +2,8 @@
 #include "drw.h" 
 #include "fwd.h"
 
+#include "drw_types.h"
+
 static void drw_cur_free(Drw *drw, Cur *cursor);
 static void drw_clr_free(Clr *clr);
 static void drw_free(Drw *drw);

@@ -3,7 +3,7 @@
 #include <X11/cursorfont.h>
 
 #include "types.h"
-#include "drw.h"
+#include "drw_types.h"
 #include "fwd.h"
 
 static Cur *
