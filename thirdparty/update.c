@@ -5,21 +5,23 @@
 static Bool gettextprop(Window w, Atom atom, char *text, unsigned int size, Display* dpy);
 static Atom getatomprop(Client *c, Atom prop, Display* dpy);
 
-extern Window root;
-extern char stext[256];
-extern Monitor *selmon;
 #include <X11/Xatom.h>
 #include <string.h>
 void
 updatestatus(Display* dpy) {
+	extern Window root;
+	extern char stext[256];
+	extern Monitor *selmon;
+
 	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext), dpy))
 		strcpy(stext, "dwm-"VERSION);
 	drawbar(selmon);
 }
 
-extern int bh;
 void
 updatebarpos(Monitor *m) {
+	extern int bh;
+
 	m->wy = m->my;
 	m->wh = m->mh;
 	if(m->showbar) {
@@ -31,11 +33,14 @@ updatebarpos(Monitor *m) {
 		m->by = -bh;
 }
 
-extern Monitor *mons;
 #include "drw.h"
-extern Cur *cursor[CurLast];
 void
 updatebars(Display* dpy) {
+	extern Window root;
+	extern Monitor *mons;
+	extern int bh;
+	extern Cur *cursor[CurLast];
+
 	Monitor *m;
 	int screen = DefaultScreen(dpy);
 	XSetWindowAttributes wa = {
@@ -54,9 +59,11 @@ updatebars(Display* dpy) {
 	}
 }
 
-extern Atom netatom[NetLast];
 void
 updateclientlist(Display* dpy) {
+	extern Monitor *mons;
+	extern Atom netatom[NetLast];
+
 	Client *c;
 	Monitor *m;
 
@@ -68,9 +75,10 @@ updateclientlist(Display* dpy) {
 			                (unsigned char *) &(c->win), 1);
 }
 
-extern unsigned int numlockmask;
 void
 updatenumlockmask(Display* dpy) {
+	extern unsigned int numlockmask;
+
 	unsigned int i, j;
 	XModifierKeymap *modmap;
 
@@ -134,9 +142,11 @@ updatesizehints(Client *c, Display* dpy) {
 	             && c->maxw == c->minw && c->maxh == c->minh);
 }
 
-extern const char broken[];
 void
 updatetitle(Client *c, Display* dpy) {
+	extern Atom netatom[NetLast];
+	extern const char broken[];
+
 	if(!gettextprop(c->win, netatom[NetWMName], c->name, sizeof c->name, dpy))
 		gettextprop(c->win, XA_WM_NAME, c->name, sizeof c->name, dpy);
 	if(c->name[0] == '\0') /* hack to mark broken clients */
@@ -145,6 +155,8 @@ updatetitle(Client *c, Display* dpy) {
 
 void
 updatewindowtype(Client *c, Display* dpy) {
+	extern Atom netatom[NetLast];
+
 	Atom state = getatomprop(c, netatom[NetWMState], dpy);
 	Atom wtype = getatomprop(c, netatom[NetWMWindowType], dpy);
 
@@ -156,6 +168,8 @@ updatewindowtype(Client *c, Display* dpy) {
 
 void
 updatewmhints(Client *c, Display* dpy) {
+	extern Monitor *selmon;
+
 	XWMHints *wmh;
 
 	if((wmh = XGetWMHints(dpy, c->win))) {

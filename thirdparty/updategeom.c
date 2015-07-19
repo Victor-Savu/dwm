@@ -14,15 +14,16 @@ static Monitor *createmon(void);
 static Bool isuniquegeom(XineramaScreenInfo *unique, size_t n, XineramaScreenInfo *info);
 #endif
 
-extern Monitor *mons;
-extern Monitor *selmon;
-extern int sw;
-extern int sh;
-extern Window root;
 #include <stdlib.h>
 #include <string.h>
 Bool
 updategeom(Display* dpy) {
+	extern Monitor *mons;
+	extern Monitor *selmon;
+	extern int sw;
+	extern int sh;
+	extern Window root;
+
 	Bool dirty = False;
 
 #ifdef XINERAMA
@@ -103,14 +104,15 @@ updategeom(Display* dpy) {
 	return dirty;
 }
 
-extern const float mfact; 
-extern const int nmaster;    
-extern const Bool showbar;     
-extern const Bool topbar;     
-extern const Layout layouts[];
-extern const size_t LENGTH_layouts;
 Monitor *
 createmon(void) {
+	extern const float mfact; 
+	extern const int nmaster;    
+	extern const Bool showbar;     
+	extern const Bool topbar;     
+	extern const Layout layouts[];
+	extern const size_t LENGTH_layouts;
+
 	Monitor *m;
 
 	if(!(m = (Monitor *)calloc(1, sizeof(Monitor))))

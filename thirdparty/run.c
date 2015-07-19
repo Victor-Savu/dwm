@@ -1,10 +1,11 @@
 #include "types.h"
 #include <X11/Xlib.h>
 
-extern HandlerT handler[LASTEvent];
-extern Bool running;
 void
 run(Display* dpy) {
+	extern HandlerT handler[LASTEvent];
+	extern Bool running;
+
 	XEvent ev;
 	/* main event loop */
 	XSync(dpy, False);

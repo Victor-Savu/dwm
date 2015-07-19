@@ -71,31 +71,32 @@ drw_load_fonts(Drw* drw, const char *fonts[], size_t fontcount) {
 void die(const char *errstr, ...);
 
 // globals
-extern const char *fonts[1]; // config_fonts.c
 
-
-// private
 static void sigchld(int unused);
 
-extern int sw;
-extern int sh;
-extern Window root;
 #include "drw.h"
-extern Drw *drw;
-extern int bh;
-extern Atom wmatom[WMLast];
-extern Atom netatom[NetLast];
-extern Cur *cursor[CurLast];
-extern ClrScheme scheme[SchemeLast];
 #include <X11/Xatom.h>
-extern const char normbordercolor[];
-extern const char normbgcolor[];
-extern const char normfgcolor[];
-extern const char selbordercolor[];
-extern const char selbgcolor[];
-extern const char selfgcolor[];
+
+// private
 void
 setup(Display* dpy) {
+	extern const char *fonts[1]; // config_fonts.c
+	extern int sw;
+	extern int sh;
+	extern Window root;
+	extern Drw *drw;
+	extern int bh;
+	extern Atom wmatom[WMLast];
+	extern Atom netatom[NetLast];
+	extern Cur *cursor[CurLast];
+	extern ClrScheme scheme[SchemeLast];
+	extern const char normbordercolor[];
+	extern const char normbgcolor[];
+	extern const char normfgcolor[];
+	extern const char selbordercolor[];
+	extern const char selbgcolor[];
+	extern const char selfgcolor[];
+
 	XSetWindowAttributes wa;
 	int screen;
 

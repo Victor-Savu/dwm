@@ -59,19 +59,9 @@ arrangemon(Monitor *m, Display* dpy) {
 		m->lt[m->sellt]->arrange(m, dpy);
 }
 
-extern const char broken[];
-extern Monitor *mons;
-extern const size_t LENGTH_rules;
-extern const Rule rules[];
-extern const size_t LENGTH_tags;
-
-extern int sw;
-extern int sh;
-extern int bh;
-extern const Bool resizehints; 
-
 void
 arrange(Monitor *m, Display* dpy) {
+	extern Monitor *mons;
 	if(m)
 		showhide(m->stack, dpy);
 	else for(m = mons; m; m = m->next)
@@ -95,16 +85,18 @@ attachstack(Client *c) {
 	c->mon->stack = c;
 }
 
-extern Monitor *selmon;
-extern Drw *drw;
-extern int blw;
-extern char stext[256];
-extern unsigned int numlockmask;
-extern const char *tags[];
-extern const size_t LENGTH_buttons;
-extern Button buttons[];
 void
 buttonpress(XEvent *e, Display* dpy) {
+ 	extern Monitor *selmon;
+	extern Drw *drw;
+	extern const char *tags[];
+	extern const size_t LENGTH_tags;
+	extern Button buttons[];
+	extern int blw;
+	extern char stext[256];
+	extern unsigned int numlockmask;
+	extern const size_t LENGTH_buttons;
+
 	unsigned int i, x, click;
 	Arg arg = {0};
 	Client *c;
@@ -188,6 +180,9 @@ detachstack(Client *c) {
 
 Monitor *
 dirtomon(int dir) {
+	extern Monitor *selmon;
+	extern Monitor *mons;
+
 	Monitor *m = NULL;
 
 	if(dir > 0) {
@@ -209,9 +204,11 @@ drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h) {
 	XSync(drw->dpy, False);
 }
 
-extern ClrScheme scheme[SchemeLast];
 void
 drawbar(Monitor *m) {
+	extern ClrScheme scheme[SchemeLast];
+	extern int blw;
+
 	int x, xx, w;
 	unsigned int i, occ = 0, urg = 0;
 	Client *c;
@@ -263,6 +260,7 @@ drawbar(Monitor *m) {
 
 void
 drawbars(void) {
+	extern Monitor *mons;
 	Monitor *m;
 
 	for(m = mons; m; m = m->next)
@@ -282,10 +280,13 @@ clearurgent(Client *c, Display* dpy) {
 	XFree(wmh);
 }
 
-extern Window root;
 void
 focus(Client *c, Display* dpy) {
+	extern Window root;
 	extern Atom netatom[NetLast];
+	extern Monitor *selmon;
+	extern ClrScheme scheme[SchemeLast];
+
 	if(!c || !ISVISIBLE(c))
 		for(c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
 	/* was if(selmon->sel) */
@@ -312,6 +313,10 @@ focus(Client *c, Display* dpy) {
 
 void
 focusmon(const Arg *arg, Display* dpy) {
+	extern Monitor *mons;
+	extern Monitor *selmon;
+
+	
 	Monitor *m;
 
 	if(!mons->next)
@@ -326,6 +331,8 @@ focusmon(const Arg *arg, Display* dpy) {
 
 Bool
 getrootptr(int *x, int *y, Display* dpy) {
+	extern Window root;
+
 	int di;
 	unsigned int dui;
 	Window dummy;
@@ -333,9 +340,10 @@ getrootptr(int *x, int *y, Display* dpy) {
 	return XQueryPointer(dpy, root, &dummy, &dummy, x, y, &di, &di, &dui);
 }
 
-extern Atom wmatom[WMLast];
 long
 getstate(Window w, Display* dpy) {
+	extern Atom wmatom[WMLast];
+
 	int format;
 	long result = -1;
 	unsigned char *p = NULL;
@@ -354,6 +362,10 @@ getstate(Window w, Display* dpy) {
 
 void
 grabbuttons(Client *c, Bool focused, Display* dpy) {
+	extern Button buttons[];
+	extern const size_t LENGTH_buttons;
+	extern unsigned int numlockmask;
+
 	updatenumlockmask(dpy);
 	{
 		unsigned int i, j;
@@ -376,6 +388,10 @@ grabbuttons(Client *c, Bool focused, Display* dpy) {
 
 void
 killclient(const Arg *argi, Display* dpy) {
+	extern Monitor *selmon;
+	extern Atom wmatom[WMLast];
+
+
 	XErrorHandlerT xeh;
 
 	if(!selmon->sel)
@@ -394,6 +410,11 @@ killclient(const Arg *argi, Display* dpy) {
 // single caller
 static void
 applyrules(Client *c, Display* dpy) {
+	extern const Rule rules[];
+	extern const size_t LENGTH_rules;
+	extern const char broken[];
+	extern Monitor *mons;
+	
 	const char *type, *instance;
 	unsigned int i;
 	const Rule *r;
@@ -426,9 +447,15 @@ applyrules(Client *c, Display* dpy) {
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
 
-extern const unsigned int borderpx;        
 void
 manage(Window w, XWindowAttributes *wa, Display* dpy) {
+	extern Window root;
+	extern Monitor *selmon;
+	extern int bh;
+	extern int sw;
+	extern ClrScheme scheme[SchemeLast];
+
+	extern const unsigned int borderpx;
 	extern Atom netatom[NetLast];
 	Client *c, *t = NULL;
 	Window trans = None;
@@ -506,6 +533,10 @@ pop(Client *c, Display* dpy) {
 
 Monitor *
 recttomon(int x, int y, int w, int h) {
+	extern Monitor *mons;
+	extern Monitor *selmon;
+
+	
 	Monitor *m, *r = selmon;
 	int a, area = 0;
 
@@ -519,6 +550,11 @@ recttomon(int x, int y, int w, int h) {
 
 static Bool
 applysizehints(Client *c, int *x, int *y, int *w, int *h, Bool interact) {
+	extern const Bool resizehints; 
+	extern int bh;
+	extern int sh;
+	extern int sw;
+
 	Bool baseismin;
 	Monitor *m = c->mon;
 
@@ -629,6 +665,8 @@ restack(Monitor *m, Display* dpy) {
 
 void
 scan(Display* dpy) {
+	extern Window root;
+
 	unsigned int i, num;
 	Window d1, d2, *wins = NULL;
 	XWindowAttributes wa;
@@ -670,6 +708,8 @@ sendmon(Client *c, Monitor *m, Display* dpy) {
 
 void
 setclientstate(Client *c, long state, Display* dpy) {
+	extern Atom wmatom[WMLast];
+
 	long data[] = { state, None };
 
 	XChangeProperty(dpy, c->win, wmatom[WMState], wmatom[WMState], 32,
@@ -678,6 +718,8 @@ setclientstate(Client *c, long state, Display* dpy) {
 
 Bool
 sendevent(Client *c, Atom proto, Display* dpy) {
+	extern Atom wmatom[WMLast];
+
 	int n;
 	Atom *protocols;
 	Bool exists = False;
@@ -700,9 +742,12 @@ sendevent(Client *c, Atom proto, Display* dpy) {
 	return exists;
 }
 
-extern Atom netatom[NetLast];
 void
 setfocus(Client *c, Display* dpy) {
+	extern Window root;
+	extern Atom wmatom[WMLast];
+	extern Atom netatom[NetLast];
+
 	if(!c->neverfocus) {
 		XSetInputFocus(dpy, c->win, RevertToPointerRoot, CurrentTime);
 		XChangeProperty(dpy, root, netatom[NetActiveWindow],
@@ -714,6 +759,8 @@ setfocus(Client *c, Display* dpy) {
 
 void
 setfullscreen(Client *c, Bool fullscreen, Display* dpy) {
+	extern Atom netatom[NetLast];
+
 	if(fullscreen) {
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 		                PropModeReplace, (unsigned char*)&netatom[NetWMFullscreen], 1);
@@ -759,6 +806,10 @@ showhide(Client *c, Display* dpy) {
 
 void
 tagmon(const Arg *arg, Display* dpy) {
+	extern Monitor *mons;
+	extern Monitor *selmon;
+
+	
 	if(!selmon->sel || !mons->next)
 		return;
 	sendmon(selmon->sel, dirtomon(arg->i), dpy);
@@ -766,6 +817,10 @@ tagmon(const Arg *arg, Display* dpy) {
 
 void
 unfocus(Client *c, Bool setfocus, Display* dpy) {
+	extern ClrScheme scheme[SchemeLast];
+	extern Atom netatom[NetLast];
+
+
 	if(!c)
 		return;
 	grabbuttons(c, False, dpy);
@@ -804,6 +859,8 @@ unmanage(Client *c, Bool destroyed, Display* dpy) {
 
 Client *
 wintoclient(Window w) {
+	extern Monitor *mons;
+	
 	Client *c;
 	Monitor *m;
 
@@ -816,6 +873,10 @@ wintoclient(Window w) {
 
 Monitor *
 wintomon(Window w, Display* dpy) {
+	extern Monitor *mons;
+	extern Monitor *selmon;
+
+	
 	int x, y;
 	Client *c;
 	Monitor *m;
