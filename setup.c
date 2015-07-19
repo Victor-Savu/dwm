@@ -3,7 +3,70 @@
 #include <X11/cursorfont.h>
 
 #include "types.h"
+#include "drw.h"
 #include "fwd.h"
+
+static Cur *
+drw_cur_create(Drw *drw, int shape) {
+	Cur *cur = (Cur *)calloc(1, sizeof(Cur));
+
+	if(!drw || !cur)
+		return NULL;
+	cur->cursor = XCreateFontCursor(drw->dpy, shape);
+	return cur;
+}
+
+void die(const char *errstr, ...);
+
+static Clr *
+drw_clr_create(Drw *drw, const char *clrname) {
+	Clr *clr;
+	Colormap cmap;
+	Visual *vis;
+
+	if(!drw)
+		return NULL;
+	clr = (Clr *)calloc(1, sizeof(Clr));
+	if(!clr)
+		return NULL;
+	cmap = DefaultColormap(drw->dpy, drw->screen);
+	vis = DefaultVisual(drw->dpy, drw->screen);
+	if(!XftColorAllocName(drw->dpy, vis, cmap, clrname, &clr->rgb))
+		die("error, cannot allocate color '%s'\n", clrname);
+	clr->pix = clr->rgb.pixel;
+	return clr;
+}
+
+static Drw *
+drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h) {
+	Drw *drw = (Drw *)calloc(1, sizeof(Drw));
+	if(!drw)
+		return NULL;
+	drw->dpy = dpy;
+	drw->screen = screen;
+	drw->root = root;
+	drw->w = w;
+	drw->h = h;
+	drw->drawable = XCreatePixmap(dpy, root, w, h, DefaultDepth(dpy, screen));
+	drw->gc = XCreateGC(dpy, root, 0, NULL);
+	drw->fontcount = 0;
+	XSetLineAttributes(dpy, drw->gc, 1, LineSolid, CapButt, JoinMiter);
+	return drw;
+}
+
+static void
+drw_load_fonts(Drw* drw, const char *fonts[], size_t fontcount) {
+	size_t i;
+	Fnt *font;
+	for (i = 0; i < fontcount; i++) {
+		if (drw->fontcount >= DRW_FONT_CACHE_SIZE) {
+			die("Font cache exhausted.\n");
+		} else if ((font = drw_font_create(drw, fonts[i]))) {
+			drw->fonts[drw->fontcount++] = font;
+		}
+	}
+}
+
 
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 
@@ -11,6 +74,7 @@ void die(const char *errstr, ...);
 
 // globals
 extern const char *fonts[1]; // config_fonts.c
+
 
 // private
 static void sigchld(int unused);

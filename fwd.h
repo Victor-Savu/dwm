@@ -3,15 +3,11 @@
 #include "types.h"
 
 /* function declarations */
-void applyrules(Client *c, Display* dpy);
-Bool applysizehints(Client *c, int *x, int *y, int *w, int *h, Bool interact);
 void arrange(Monitor *m, Display* dpy);
-void arrangemon(Monitor *m, Display* dpy);
 void attach(Client *c);
 void attachstack(Client *c);
 void buttonpress(XEvent *e, Display* dpy);
 void cleanupmon(Monitor *mon, Display* dpy);
-void clearurgent(Client *c, Display* dpy);
 void clientmessage(XEvent *e, Display* dpy);
 void configure(Client *c, Display* dpy);
 void configurenotify(XEvent *e, Display* dpy);

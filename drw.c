@@ -60,23 +60,6 @@ utf8decode(const char *c, long *u, size_t clen) {
 	return len;
 }
 
-Drw *
-drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h) {
-	Drw *drw = (Drw *)calloc(1, sizeof(Drw));
-	if(!drw)
-		return NULL;
-	drw->dpy = dpy;
-	drw->screen = screen;
-	drw->root = root;
-	drw->w = w;
-	drw->h = h;
-	drw->drawable = XCreatePixmap(dpy, root, w, h, DefaultDepth(dpy, screen));
-	drw->gc = XCreateGC(dpy, root, 0, NULL);
-	drw->fontcount = 0;
-	XSetLineAttributes(dpy, drw->gc, 1, LineSolid, CapButt, JoinMiter);
-	return drw;
-}
-
 void
 drw_resize(Drw *drw, unsigned int w, unsigned int h) {
 	if(!drw)
@@ -86,17 +69,6 @@ drw_resize(Drw *drw, unsigned int w, unsigned int h) {
 	if(drw->drawable != 0)
 		XFreePixmap(drw->dpy, drw->drawable);
 	drw->drawable = XCreatePixmap(drw->dpy, drw->root, w, h, DefaultDepth(drw->dpy, drw->screen));
-}
-
-void
-drw_free(Drw *drw) {
-	size_t i;
-	for (i = 0; i < drw->fontcount; i++) {
-		drw_font_free(drw->fonts[i]);
-	}
-	XFreePixmap(drw->dpy, drw->drawable);
-	XFreeGC(drw->dpy, drw->gc);
-	free(drw);
 }
 
 /* This function is an implementation detail. Library users should use
@@ -153,19 +125,6 @@ drw_font_create(Drw *drw, const char *fontname) {
 }
 
 void
-drw_load_fonts(Drw* drw, const char *fonts[], size_t fontcount) {
-	size_t i;
-	Fnt *font;
-	for (i = 0; i < fontcount; i++) {
-		if (drw->fontcount >= DRW_FONT_CACHE_SIZE) {
-			die("Font cache exhausted.\n");
-		} else if ((font = drw_font_xcreate(drw, fonts[i], NULL))) {
-			drw->fonts[drw->fontcount++] = font;
-		}
-	}
-}
-
-void
 drw_font_free(Fnt *font) {
 	if(!font)
 		return;
@@ -173,25 +132,6 @@ drw_font_free(Fnt *font) {
 		FcPatternDestroy(font->pattern);
 	XftFontClose(font->dpy, font->xfont);
 	free(font);
-}
-
-Clr *
-drw_clr_create(Drw *drw, const char *clrname) {
-	Clr *clr;
-	Colormap cmap;
-	Visual *vis;
-
-	if(!drw)
-		return NULL;
-	clr = (Clr *)calloc(1, sizeof(Clr));
-	if(!clr)
-		return NULL;
-	cmap = DefaultColormap(drw->dpy, drw->screen);
-	vis = DefaultVisual(drw->dpy, drw->screen);
-	if(!XftColorAllocName(drw->dpy, vis, cmap, clrname, &clr->rgb))
-		die("error, cannot allocate color '%s'\n", clrname);
-	clr->pix = clr->rgb.pixel;
-	return clr;
 }
 
 void
@@ -360,14 +300,6 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, const char *tex
 	return x;
 }
 
-void
-drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h) {
-	if(!drw)
-		return;
-	XCopyArea(drw->dpy, drw->drawable, win, drw->gc, x, y, w, h, x, y);
-	XSync(drw->dpy, False);
-}
-
 
 void
 drw_font_getexts(Fnt *font, const char *text, unsigned int len, Extnts *tex) {
@@ -388,15 +320,5 @@ drw_font_getexts_width(Fnt *font, const char *text, unsigned int len) {
 		return -1;
 	drw_font_getexts(font, text, len, &tex);
 	return tex.w;
-}
-
-Cur *
-drw_cur_create(Drw *drw, int shape) {
-	Cur *cur = (Cur *)calloc(1, sizeof(Cur));
-
-	if(!drw || !cur)
-		return NULL;
-	cur->cursor = XCreateFontCursor(drw->dpy, shape);
-	return cur;
 }
 

@@ -4,6 +4,7 @@
 
 static void drw_cur_free(Drw *drw, Cur *cursor);
 static void drw_clr_free(Clr *clr);
+static void drw_free(Drw *drw);
 
 void
 cleanup(Display* dpy) {
@@ -54,5 +55,16 @@ void
 drw_clr_free(Clr *clr) {
 	if(clr)
 		free(clr);
+}
+
+void
+drw_free(Drw *drw) {
+	size_t i;
+	for (i = 0; i < drw->fontcount; i++) {
+		drw_font_free(drw->fonts[i]);
+	}
+	XFreePixmap(drw->dpy, drw->drawable);
+	XFreeGC(drw->dpy, drw->gc);
+	free(drw);
 }
 
