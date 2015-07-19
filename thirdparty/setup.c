@@ -1,5 +1,3 @@
-#include <signal.h>
-#include <wait.h>
 #include <X11/cursorfont.h>
 
 #include "types.h"
@@ -156,6 +154,8 @@ setup(Display* dpy) {
 	focus(NULL, dpy);
 }
 
+#include <signal.h>
+#include <wait.h>
 void
 sigchld(int unused) {
 	if(signal(SIGCHLD, sigchld) == SIG_ERR)
