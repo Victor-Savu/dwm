@@ -3,7 +3,6 @@
 
 #include "types.h"
 
-void resizemouse(const Arg *arg, Display* dpy);
 void setlayout(const Arg *arg, Display* dpy);
 void tag(const Arg *arg, Display* dpy);
 void togglefloating(const Arg *arg, Display* dpy);

@@ -63,6 +63,7 @@ void
 updateclientlist(Display* dpy) {
 	extern Monitor *mons;
 	extern Atom netatom[NetLast];
+    extern Window root;
 
 	Client *c;
 	Monitor *m;

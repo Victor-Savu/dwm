@@ -207,7 +207,13 @@ drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h) {
 void
 drawbar(Monitor *m) {
 	extern ClrScheme scheme[SchemeLast];
+	extern const char *tags[];
+	extern const size_t LENGTH_tags;
 	extern int blw;
+	extern int bh;
+    extern Drw* drw;
+    extern Monitor *selmon;
+	extern char stext[256];
 
 	int x, xx, w;
 	unsigned int i, occ = 0, urg = 0;
@@ -414,6 +420,7 @@ applyrules(Client *c, Display* dpy) {
 	extern const size_t LENGTH_rules;
 	extern const char broken[];
 	extern Monitor *mons;
+	extern const size_t LENGTH_tags;
 	
 	const char *type, *instance;
 	unsigned int i;
@@ -819,7 +826,7 @@ void
 unfocus(Client *c, Bool setfocus, Display* dpy) {
 	extern ClrScheme scheme[SchemeLast];
 	extern Atom netatom[NetLast];
-
+    extern Window root;
 
 	if(!c)
 		return;
@@ -875,7 +882,7 @@ Monitor *
 wintomon(Window w, Display* dpy) {
 	extern Monitor *mons;
 	extern Monitor *selmon;
-
+    extern Window root;
 	
 	int x, y;
 	Client *c;
