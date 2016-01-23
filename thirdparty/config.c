@@ -52,8 +52,7 @@ const Bool resizehints = True; /* True means respect size hints in tiled resizal
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 const size_t LENGTH_dmenucmd = LENGTH(dmenucmd);
 const char *termcmd[]  = { "st", NULL };
 const size_t LENGTH_termcmd = LENGTH(termcmd);

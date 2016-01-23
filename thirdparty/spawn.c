@@ -9,10 +9,7 @@
 void
 spawn(const Arg *arg, Display* dpy) {
     extern const char *dmenucmd[];
-    extern char dmenumon[2]; 
     extern Monitor *selmon;
-	if(arg->v == dmenucmd)
-		dmenumon[0] = '0' + selmon->num;
 	if(fork() == 0) {
 		if(dpy)
 			close(ConnectionNumber(dpy));
